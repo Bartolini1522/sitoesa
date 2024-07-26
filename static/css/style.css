@@ -137,8 +137,9 @@ footer {
 
 /* Control Panel */
 .control-panel {
-    margin-top: 20px;
-    margin-left: 600px;
+    margin-top: 100px; /* Aumenta il margine superiore per evitare la sovrapposizione */
+    margin-left: auto; /* Centratura orizzontale */
+    margin-right: auto; /* Centratura orizzontale */
     padding: 15px;
     background-color: white;
     border: 1px solid #ddd;
@@ -149,6 +150,8 @@ footer {
     align-items: center;
     width: 100%;
     max-width: 400px;
+    position: relative; /* Assicurati che sia posizionato correttamente */
+    z-index: 10; /* Assicurati che sia sopra gli altri elementi */
 }
 
 .control-panel button {
