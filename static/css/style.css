@@ -1,0 +1,186 @@
+/* Stili di base */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2em;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    font-size: 0.9em;
+    position: fixed;
+    bottom: 0;
+    z-index: 100;
+}
+
+.container {
+    position: relative;
+    display: inline-block;
+    width: 1600px; /* Larghezza fissa */
+    height: 1200px; /* Altezza fissa */
+    margin: 100px 0 20px; /* Aggiunto margine superiore per compensare l'header */
+    overflow: hidden; /* Nasconde elementi fuori dal contenitore */
+}
+
+.photo {
+    width: 100%; /* Mantiene l'immagine fissa nelle dimensioni del contenitore */
+    height: 100%; /* Mantiene l'immagine fissa nelle dimensioni del contenitore */
+    object-fit: cover; /* Mantiene l'aspetto corretto senza distorsione */
+    margin-bottom: 20px;
+}
+
+.button {
+    position: absolute;
+    width: 30px; /* Larghezza del bottone */
+    height: 30px; /* Altezza del bottone */
+    border-radius: 50%; /* Rende il bottone rotondo */
+    background-color: #000000; /* Colore iniziale del bottone (spento) */
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+    z-index: 10;
+}
+
+.button:hover {
+    transform: scale(1.1);
+}
+
+.checkbox {
+    display: none;
+    position: absolute;
+    z-index: 20;
+}
+
+.coordinates {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 3px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    z-index: 20;
+}
+
+/* Posizionamento dei bottoni con misure in px (pixel) */
+.button1 { top: 40%; left: 15%; }
+.button2 { top: 565px; left: 220px; }
+.button3 { top: 700px; left: 710px; }
+.button4 { top: 470px; left: 710px; }
+.button5 { top: 490px; left: 1080px; }
+.button6 { top: 40.5%; left: 25%; }
+
+/* Color Picker */
+.color-picker {
+    display: none;
+    position: absolute;
+    background: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 30;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.color-picker input {
+    width: 100%;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    z-index: 40;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.modal button {
+    margin: 5px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modal button:hover {
+    background-color: #45a049;
+}
+
+/* Control Panel */
+.control-panel {
+    margin-top: 20px;
+    margin-left: 600px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.control-panel button {
+    margin: 5px;
+    padding: 10px 15px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.control-panel button:hover {
+    background-color: #1976d2;
+}
+
+.control-panel input[type="color"] {
+    margin: 10px 0;
+    width: 100%;
+    max-width: 90%;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.control-panel #apply-color {
+    background-color: #FF9800;
+}
+
+.control-panel #apply-color:hover {
+    background-color: #F57C00;
+}
+

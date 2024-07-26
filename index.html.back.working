@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controller LED arrampicata</title>
+    <style>
+        /* Stili di base */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            font-size: 0.9em;
+        }
+
+        .container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            margin-bottom: 60px; /* Spazio per il footer sui dispositivi mobili */
+        }
+
+        .photo {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .button {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: black;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+        }
+
+        .checkbox {
+            display: none;
+            position: absolute;
+            z-index: 20;
+        }
+
+        .coordinates {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            z-index: 20;
+        }
+
+        /* Posizionamento dei bottoni con unità responsive, usiamo le percentuali al posto dei px per adattarci anche ai dispositivi mobili */
+        .button1 { top: 40%; left: 15%; }
+        .button2 { top: 48.5%; left: 15%; }
+        .button3 { top: 42%; left: 44%; }
+        .button4 { top: 33%; left: 45%; }
+        .button5 { top: 30%; left: 77%; }
+        .button6 { top: 40.5%; left: 25%; }
+
+        /* Color Picker */
+        .color-picker {
+            display: none;
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            z-index: 30;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .color-picker input {
+            width: 100%;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            z-index: 40;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .modal button:hover {
+            background-color: #45a049;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .control-panel button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .control-panel button:hover {
+            background-color: #1976d2;
+        }
+
+        .control-panel input[type="color"] {
+            margin: 10px 0;
+            width: 100%;
+            padding: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .button {
+                width: 25px;
+                height: 25px;
+            }
+
+            .modal {
+                width: 90%;
+            }
+
+            .control-panel {
+                width: calc(100% - 20px);
+            }
+
+            footer {
+                position: static;
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                font-size: 1em;
+            }
+
+            .button {
+                width: 20px;
+                height: 20px;
+            }
+
+            .modal {
+                width: 95%;
+            }
+
+            .control-panel button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-panel input[type="color"] {
+                padding: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="logo ESA" style="max-height: 50px;">
+        <h1>Controllo LED Parete Arrampicata</h1>
+    </header>
+
+    <div class="container">
+        <div class="control-panel" id="control-panel">
+            <button id="all-on">Accendi Tutti</button>
+            <button id="all-off">Spegni Tutti</button>
+            <input type="color" id="all-color-picker">
+            <button id="apply-color">Applica Colore</button>
+        </div>
+
+        <img src="muro2.png" alt="Immagine" class="photo" id="photo">
+
+        <div class="coordinates" id="coordinates">Coordinate: (x, y)</div>
+        <button class="button button1" id="1"></button>
+        <button class="button button2" id="2"></button>
+        <button class="button button3" id="3"></button>
+        <button class="button button4" id="4"></button>
+        <button class="button button5" id="5"></button>
+        <button class="button button6" id="6"></button>
+
+        <!-- Color Picker -->
+        <div class="color-picker" id="color-picker">
+            <input type="color" id="color-input">
+            <button id="submit-color">Applica</button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal" id="modal">
+            <button id="on-button">Accendi</button>
+            <button id="off-button">Spegni</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Elite Sport Academy. Tutti i diritti riservati. Versione alpha.</p>
+    </footer>
+
+    <script>
+        let selectedButtonId;
+        let selectedButton;
+
+        function showModal(event, buttonId) {
+            selectedButtonId = buttonId;
+            const modal = document.getElementById('modal');
+            modal.style.display = 'block';
+            modal.style.top = (event.clientY + 10) + 'px';
+            modal.style.left = (event.clientX + 10) + 'px';
+        }
+
+        function showColorPicker(event) {
+            const colorPicker = document.getElementById('color-picker');
+            colorPicker.style.display = 'block';
+            colorPicker.style.top = (event.clientY + 10) + 'px';
+            colorPicker.style.left = (event.clientX + 10) + 'px';
+        }
+
+        function handleButtonClick(event) {
+            const buttonId = event.target.id;
+            selectedButton = event.target;
+            showModal(event, buttonId);
+        }
+
+        function applyColorToAll(color) {
+            document.querySelectorAll('.button').forEach(button => {
+                button.style.backgroundColor = color;
+            });
+        }
+
+        document.getElementById('photo').addEventListener('click', function(event) {
+            const rect = event.target.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const coordinatesBox = document.getElementById('coordinates');
+            coordinatesBox.textContent = `Coordinate: (${Math.round(x)}, ${Math.round(y)})`;
+        });
+
+        document.getElementById('submit-color').addEventListener('click', function() {
+            if (!selectedButtonId) {
+                console.log("No button selected");
+                return;
+            }
+
+            const colorInput = document.getElementById('color-input');
+            const color = colorInput.value;
+            const selectedButton = document.getElementById(selectedButtonId);
+
+            if (selectedButton) {
+                selectedButton.style.backgroundColor = color;
+                console.log(`Button ID: ${selectedButtonId}, Color: ${color}, Power: On`);
+            }
+
+            document.getElementById('color-picker').style.display = 'none';
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        document.getElementById('on-button').addEventListener('click', function() {
+            showColorPicker(event);
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        document.getElementById('off-button').addEventListener('click', function() {
+            if (selectedButton) {
+                selectedButton.style.backgroundColor = 'black';
+                console.log(`Button ID: ${selectedButtonId}, Color: black, Power: Off`);
+            }
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', handleButtonClick);
+        });
+
+        // Control Panel Actions
+        document.getElementById('all-on').addEventListener('click', function() {
+            applyColorToAll('white'); // Accendi tutti i LED con colore bianco
+            console.log('Button ID: all, Color: white, Power: off');
+        });
+
+        document.getElementById('all-off').addEventListener('click', function() {
+            applyColorToAll('black'); // Spegni tutti i LED (colore nero)
+            console.log('Button ID: all, Power: off');
+        });
+
+        document.getElementById('apply-color').addEventListener('click', function() {
+            const colorInput = document.getElementById('all-color-picker');
+            const color = colorInput.value;
+            applyColorToAll(color);
+            console.log(`Button ID: all, color: ${color}, Power: on`);
+        });
+    </script>
+</body>
+</html>
+
