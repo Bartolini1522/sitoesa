@@ -34,7 +34,7 @@ function applyColorToAll(color) {
 
 // Invia la richiesta al server Flask per controllare i LED
 function sendLedRequest(id, color = null) {
-    const url = color !== null ? `http://localhost:5000/set_led/${id}/${color}` : `http://localhost:5000/turn_off/${id}`;
+    const url = color !== null ? `http://delfo.local:5000/set_led/${id}/${color}` : `http://delfo.local:5000/turn_off/${id}`;
     fetch(url, {
         method: 'POST',
         headers: {

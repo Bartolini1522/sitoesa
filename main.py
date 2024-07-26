@@ -50,5 +50,4 @@ def set_led_color(led_id, color):
         return jsonify({'status': 'error', 'message': 'LED ID non valido'}), 404
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
+	app.run(host='0.0.0.0', port=5000, debug=True)
