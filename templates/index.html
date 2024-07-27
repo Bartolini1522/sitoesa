@@ -1,69 +1,63 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controller LED arrampicata</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>LED Controller</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <img src="/static/img/logo.png" alt="logo ESA" style="max-height: 50px;">
-        <h1>Controllo LED Parete Arrampicata</h1>
-    </header>
-
     <div class="container">
-        <!-- Pannello di controllo principale -->
-        <div class="control-panel" id="control-panel">
-            <button id="all-on">Accendi Tutti</button>
-            <button id="all-off">Spegni Tutti</button>
-            <input type="color" id="all-color-picker">
-            <button id="apply-color">Applica Colore</button>
-            <button id="multi-select-toggle">Selezione Multipla</button> <!-- Pulsante per attivare la selezione multipla -->
+        <h1>LED Controller</h1>
+
+        <!-- Contenitore per l'immagine -->
+        <div class="photo-container">
+            <img id="photo" src="your-image-source.jpg" alt="Layout della stanza" />
+            <div id="coordinates"></div>
         </div>
 
-        <!-- Immagine principale -->
-        <img src="/static/img/muro2.png" alt="Immagine" class="photo" id="photo">
-
-        <!-- Coordinate del click sull'immagine -->
-        <div class="coordinates" id="coordinates">Coordinate: (x, y)</div>
-        
-        <!-- Pulsanti LED e checkbox per selezione multipla -->
-        <div class="led-container">
-            <input type="checkbox" class="checkbox" id="checkbox-1" style="display:none">
-            <button class="button button1" id="1"></button>
-            
-            <input type="checkbox" class="checkbox" id="checkbox-2" style="display:none">
-            <button class="button button2" id="2"></button>
-            
-            <input type="checkbox" class="checkbox" id="checkbox-3" style="display:none">
-            <button class="button button3" id="3"></button>
+        <!-- Contenitore dei pulsanti LED -->
+        <div id="led-buttons" class="led-container">
+            <button id="button-1" class="button">LED 1</button>
+            <input type="checkbox" id="checkbox-1" class="checkbox">
+            <button id="button-2" class="button">LED 2</button>
+            <input type="checkbox" id="checkbox-2" class="checkbox">
+            <button id="button-3" class="button">LED 3</button>
+            <input type="checkbox" id="checkbox-3" class="checkbox">
+            <button id="button-4" class="button">LED 4</button>
+            <input type="checkbox" id="checkbox-4" class="checkbox">
+            <!-- Aggiungi altri pulsanti LED qui -->
         </div>
 
-        <!-- Color Picker per la selezione multipla -->
-        <div class="color-picker" id="multi-color-picker" style="display:none;">
-            <input type="color" id="multi-color-input">
-            <button id="apply-multi-color">Applica Colore Selezionato</button>
-            <button id="turn-off-selected">Spegni Selezionati</button>
-        </div>
-
-        <!-- Color Picker singolo -->
-        <div class="color-picker" id="color-picker" style="display:none;">
-            <input type="color" id="color-input">
-            <button id="submit-color">Applica</button>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal" id="modal" style="display:none;">
+        <!-- Modale per il singolo LED -->
+        <div id="modal" class="modal">
             <button id="on-button">Accendi</button>
             <button id="off-button">Spegni</button>
         </div>
+
+        <!-- Color picker per singolo LED -->
+        <div id="color-picker" class="color-picker">
+            <input type="color" id="color-input" value="#ffffff">
+            <button id="submit-color">Applica Colore</button>
+        </div>
+
+        <!-- Pannello di controllo per tutti i LED -->
+        <div class="control-panel">
+            <button id="all-on">Accendi Tutti</button>
+            <button id="all-off">Spegni Tutti</button>
+            <input type="color" id="all-color-picker" value="#ffffff">
+            <button id="apply-color">Applica Colore a Tutti</button>
+            <button id="multi-select-toggle">Selezione Multipla</button>
+        </div>
+
+        <!-- Color picker per selezione multipla -->
+        <div id="multi-color-picker" class="color-picker">
+            <input type="color" id="multi-color-input" value="#ffffff">
+            <button id="apply-multi-color">Applica Colore Selezionato</button>
+            <button id="turn-off-selected">Spegni Selezionati</button>
+        </div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Elite Sport Academy. Tutti i diritti riservati. Versione beta.</p>
-    </footer>
-
-    <script src="/static/js/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

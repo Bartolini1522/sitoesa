@@ -1,3 +1,5 @@
+// script.js
+
 let selectedButtonId;
 let selectedButton;
 let multiSelectMode = false; // Modalità selezione multipla
@@ -27,166 +29,95 @@ function handleButtonClick(event) {
     showModal(event, buttonId);
 }
 
-// Applica il colore selezionato a tutti i bottoni LED
-function applyColorToAll(color) {
-    document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = color;
-    });
+// Applica il colore selezionato al LED
+function applyColorToButton(button, color) {
+    button.style.backgroundColor = color;
 }
 
-// Invia la richiesta al server Flask per controllare i LED
-function sendLedRequest(id, color = null) {
-    const url = color !== null ? `http://delfo.local:5000/set_led/${id}/${color}` : `http://delfo.local:5000/turn_off/${id}`;
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}) // Invia un corpo vuoto se non hai dati specifici da inviare
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update LED');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data.message);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+// Funzione per inviare la richiesta al server
+function sendLedRequest(buttonId, state, color) {
+    // Qui va la logica per inviare la richiesta
+    console.log(`Button ID: ${buttonId}, State: ${state}, Color: ${color}`);
 }
 
-// Visualizza le coordinate del click sull'immagine
-document.getElementById('photo').addEventListener('click', function(event) {
-    const rect = event.target.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const coordinatesBox = document.getElementById('coordinates');
-    coordinatesBox.textContent = `Coordinate: (${Math.round(x)}, ${Math.round(y)})`;
-});
-
-// Gestisce l'applicazione del colore scelto tramite color picker
-document.getElementById('submit-color').addEventListener('click', function() {
-    if (!selectedButtonId) {
-        console.log("No button selected");
-        return;
-    }
-
-    const colorInput = document.getElementById('color-input');
-    const color = colorInput.value;
-    const selectedButton = document.getElementById(selectedButtonId);
-
-    if (selectedButton) {
-        selectedButton.style.backgroundColor = color;
-        console.log(`Button ID: ${selectedButtonId}, Color: ${color}, Power: On`);
-
-        // Converti il colore in RGB
-        const rgb = parseInt(color.slice(1), 16);
-        sendLedRequest(selectedButtonId, rgb);
-    }
-
-    document.getElementById('color-picker').style.display = 'none';
-    document.getElementById('modal').style.display = 'none';
-});
-
-// Gestisce il click sul bottone "Accendi"
-document.getElementById('on-button').addEventListener('click', function() {
-    showColorPicker(event);
-    document.getElementById('modal').style.display = 'none';
-});
-
-// Gestisce il click sul bottone "Spegni"
-document.getElementById('off-button').addEventListener('click', function() {
-    if (selectedButton) {
-        selectedButton.style.backgroundColor = 'black';
-        console.log(`Button ID: ${selectedButtonId}, Power: Off`);
-        sendLedRequest(selectedButtonId);
-    }
-    document.getElementById('modal').style.display = 'none';
-});
-
-// Aggiunge gli event listener a tutti i bottoni LED
+// Aggiungi gli eventi di click ai bottoni LED
 document.querySelectorAll('.button').forEach(button => {
     button.addEventListener('click', handleButtonClick);
 });
 
-// Azioni del Pannello di Controllo
-document.getElementById('all-on').addEventListener('click', function() {
-    applyColorToAll('white'); // Accendi tutti i LED con colore bianco
-    console.log('Button ID: all, Color: white, Power: on');
+// Accendi il LED selezionato
+document.getElementById('on-button').addEventListener('click', function() {
+    selectedButton.style.backgroundColor = 'yellow';
+    sendLedRequest(selectedButtonId, 'on', 'yellow');
+    document.getElementById('modal').style.display = 'none';
+});
 
-    // Accendi tutti i LED con colore bianco
+// Spegni il LED selezionato
+document.getElementById('off-button').addEventListener('click', function() {
+    selectedButton.style.backgroundColor = 'black';
+    sendLedRequest(selectedButtonId, 'off', 'black');
+    document.getElementById('modal').style.display = 'none';
+});
+
+// Mostra il color picker per singolo LED
+document.getElementById('submit-color').addEventListener('click', function() {
+    const color = document.getElementById('color-input').value;
+    applyColorToButton(selectedButton, color);
+    sendLedRequest(selectedButtonId, 'on', color);
+    document.getElementById('color-picker').style.display = 'none';
+    document.getElementById('modal').style.display = 'none';
+});
+
+// Accendi tutti i LED
+document.getElementById('all-on').addEventListener('click', function() {
     document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = 'white';
-        sendLedRequest(button.id, 0xFFFFFF);
+        button.style.backgroundColor = 'yellow';
+        const buttonId = button.id;
+        sendLedRequest(buttonId, 'on', 'yellow');
     });
 });
 
+// Spegni tutti i LED
 document.getElementById('all-off').addEventListener('click', function() {
-    applyColorToAll('black'); // Spegni tutti i LED (colore nero)
-    console.log('Button ID: all, Power: off');
-
-    // Spegni tutti i LED
     document.querySelectorAll('.button').forEach(button => {
         button.style.backgroundColor = 'black';
-        sendLedRequest(button.id);
+        const buttonId = button.id;
+        sendLedRequest(buttonId, 'off', 'black');
     });
 });
 
+// Applica un colore a tutti i LED
 document.getElementById('apply-color').addEventListener('click', function() {
-    const colorInput = document.getElementById('all-color-picker');
-    const color = colorInput.value;
-    applyColorToAll(color);
-    console.log(`Button ID: all, color: ${color}, Power: on`);
-
-    // Converti il colore in RGB
-    const rgb = parseInt(color.slice(1), 16);
+    const color = document.getElementById('all-color-picker').value;
     document.querySelectorAll('.button').forEach(button => {
-        sendLedRequest(button.id, rgb);
+        button.style.backgroundColor = color;
+        const buttonId = button.id;
+        sendLedRequest(buttonId, 'on', color);
     });
 });
 
-// Gestisce la modalità di selezione multipla
+// Selezione multipla
 document.getElementById('multi-select-toggle').addEventListener('click', function() {
-    multiSelectMode = !multiSelectMode; // Alterna la modalità selezione multipla
-
-    // Mostra o nasconde le checkbox
+    multiSelectMode = !multiSelectMode;
     document.querySelectorAll('.checkbox').forEach(checkbox => {
-        checkbox.style.display = multiSelectMode ? 'inline-block' : 'none';
+        checkbox.style.display = multiSelectMode ? 'block' : 'none';
     });
 
-    // Mostra o nasconde il color picker per la selezione multipla
+    // Mostra il color picker per la selezione multipla
     document.getElementById('multi-color-picker').style.display = multiSelectMode ? 'block' : 'none';
-
-    if (!multiSelectMode) {
-        // Deseleziona tutte le checkbox quando la modalità di selezione multipla è disattivata
-        document.querySelectorAll('.checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-    }
 });
 
-// Applica il colore selezionato ai bottoni LED selezionati
+// Applica il colore ai LED selezionati
 document.getElementById('apply-multi-color').addEventListener('click', function() {
-    const colorInput = document.getElementById('multi-color-input');
-    const color = colorInput.value;
-
-    // Trova tutti i LED selezionati tramite checkbox
+    const color = document.getElementById('multi-color-input').value;
     document.querySelectorAll('.checkbox:checked').forEach(checkbox => {
         const buttonId = checkbox.id.split('-')[1];
-        const button = document.getElementById(buttonId);
-        button.style.backgroundColor = color;
-        console.log(`Button ID: ${buttonId}, Color: ${color}, Power: On`);
-
-        // Converti il colore in RGB
-        const rgb = parseInt(color.slice(1), 16);
-        sendLedRequest(buttonId, rgb);
+        const button = document.getElementById(`button-${buttonId}`);
+        applyColorToButton(button, color);
+        sendLedRequest(buttonId, 'on', color);
     });
 
-    // Nasconde il color picker e disattiva la modalità di selezione multipla
+    // Disattiva la modalità di selezione multipla
     multiSelectMode = false;
     document.getElementById('multi-color-picker').style.display = 'none';
     document.querySelectorAll('.checkbox').forEach(checkbox => {
@@ -195,18 +126,16 @@ document.getElementById('apply-multi-color').addEventListener('click', function(
     });
 });
 
-// Spegne solo i LED selezionati
+// Spegni solo i LED selezionati
 document.getElementById('turn-off-selected').addEventListener('click', function() {
-    // Trova tutti i LED selezionati tramite checkbox
     document.querySelectorAll('.checkbox:checked').forEach(checkbox => {
         const buttonId = checkbox.id.split('-')[1];
-        const button = document.getElementById(buttonId);
+        const button = document.getElementById(`button-${buttonId}`);
         button.style.backgroundColor = 'black';
-        console.log(`Button ID: ${buttonId}, Power: Off`);
-        sendLedRequest(buttonId);
+        sendLedRequest(buttonId, 'off', 'black');
     });
 
-    // Nasconde il color picker e disattiva la modalità di selezione multipla
+    // Disattiva la modalità di selezione multipla
     multiSelectMode = false;
     document.getElementById('multi-color-picker').style.display = 'none';
     document.querySelectorAll('.checkbox').forEach(checkbox => {
