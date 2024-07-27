@@ -1,63 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED Controller</title>
+    <title>Controller LED arrampicata</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    <header>
+        <img src="/static/img/logo.png" alt="logo ESA" style="max-height: 50px;">
+        <h1>Controllo LED Parete Arrampicata</h1>
+    </header>
+
     <div class="container">
-        <h1>LED Controller</h1>
-
-        <!-- Contenitore per l'immagine -->
-        <div class="photo-container">
-            <img id="photo" src="/static/img/muro2.png" alt="Layout della stanza" />
-            <div id="coordinates"></div>
+        <div class="control-panel" id="control-panel">
+            <button id="all-on">Accendi Tutti</button>
+            <button id="all-off">Spegni Tutti</button>
+            <input type="color" id="all-color-picker">
+            <button id="apply-color">Applica Colore</button>
         </div>
 
-        <!-- Contenitore dei pulsanti LED -->
-        <div id="led-buttons" class="led-container">
-            <button id="button-1" class="button">LED 1</button>
-            <input type="checkbox" id="checkbox-1" class="checkbox">
-            <button id="button-2" class="button">LED 2</button>
-            <input type="checkbox" id="checkbox-2" class="checkbox">
-            <button id="button-3" class="button">LED 3</button>
-            <input type="checkbox" id="checkbox-3" class="checkbox">
-            <button id="button-4" class="button">LED 4</button>
-            <input type="checkbox" id="checkbox-4" class="checkbox">
-            <!-- Aggiungi altri pulsanti LED qui -->
+        <img src="/static/img/muro2.png" alt="Immagine" class="photo" id="photo">
+
+        <div class="coordinates" id="coordinates">Coordinate: (x, y)</div>
+        <button class="button button1" id="1"></button>
+        <button class="button button2" id="2"></button>
+        <button class="button button3" id="3"></button>
+
+        <!-- Color Picker -->
+        <div class="color-picker" id="color-picker">
+            <input type="color" id="color-input">
+            <button id="submit-color">Applica</button>
         </div>
 
-        <!-- Modale per il singolo LED -->
-        <div id="modal" class="modal">
+        <!-- Modal -->
+        <div class="modal" id="modal">
             <button id="on-button">Accendi</button>
             <button id="off-button">Spegni</button>
         </div>
-
-        <!-- Color picker per singolo LED -->
-        <div id="color-picker" class="color-picker">
-            <input type="color" id="color-input" value="#ffffff">
-            <button id="submit-color">Applica Colore</button>
-        </div>
-
-        <!-- Pannello di controllo per tutti i LED -->
-        <div class="control-panel">
-            <button id="all-on">Accendi Tutti</button>
-            <button id="all-off">Spegni Tutti</button>
-            <input type="color" id="all-color-picker" value="#ffffff">
-            <button id="apply-color">Applica Colore a Tutti</button>
-            <button id="multi-select-toggle">Selezione Multipla</button>
-        </div>
-
-        <!-- Color picker per selezione multipla -->
-        <div id="multi-color-picker" class="color-picker">
-            <input type="color" id="multi-color-input" value="#ffffff">
-            <button id="apply-multi-color">Applica Colore Selezionato</button>
-            <button id="turn-off-selected">Spegni Selezionati</button>
-        </div>
     </div>
+
+    <footer>
+        <p>&copy; 2024 Elite Sport Academy. Tutti i diritti riservati. Versione beta.</p>
+    </footer>
 
     <script src="/static/js/script.js"></script>
 </body>
 </html>
+
