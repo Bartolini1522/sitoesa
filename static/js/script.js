@@ -1,8 +1,10 @@
 let selectedButtonId;
 let selectedButton;
+let multiSelectMode = false; // Modalità selezione multipla
 
 // Mostra il modal quando un bottone LED è cliccato
 function showModal(event, buttonId) {
+    if (multiSelectMode) return; // Ignora il click se è attiva la modalità selezione multipla
     selectedButtonId = buttonId;
     const modal = document.getElementById('modal');
     modal.style.display = 'block';
@@ -55,7 +57,6 @@ function sendLedRequest(id, color = null) {
         console.error('Error:', error);
     });
 }
- 
 
 // Visualizza le coordinate del click sull'immagine
 document.getElementById('photo').addEventListener('click', function(event) {
@@ -148,3 +149,68 @@ document.getElementById('apply-color').addEventListener('click', function() {
     });
 });
 
+// Gestisce la modalità di selezione multipla
+document.getElementById('multi-select-toggle').addEventListener('click', function() {
+    multiSelectMode = !multiSelectMode; // Alterna la modalità selezione multipla
+
+    // Mostra o nasconde le checkbox
+    document.querySelectorAll('.checkbox').forEach(checkbox => {
+        checkbox.style.display = multiSelectMode ? 'inline-block' : 'none';
+    });
+
+    // Mostra o nasconde il color picker per la selezione multipla
+    document.getElementById('multi-color-picker').style.display = multiSelectMode ? 'block' : 'none';
+
+    if (!multiSelectMode) {
+        // Deseleziona tutte le checkbox quando la modalità di selezione multipla è disattivata
+        document.querySelectorAll('.checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    }
+});
+
+// Applica il colore selezionato ai bottoni LED selezionati
+document.getElementById('apply-multi-color').addEventListener('click', function() {
+    const colorInput = document.getElementById('multi-color-input');
+    const color = colorInput.value;
+
+    // Trova tutti i LED selezionati tramite checkbox
+    document.querySelectorAll('.checkbox:checked').forEach(checkbox => {
+        const buttonId = checkbox.id.split('-')[1];
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = color;
+        console.log(`Button ID: ${buttonId}, Color: ${color}, Power: On`);
+
+        // Converti il colore in RGB
+        const rgb = parseInt(color.slice(1), 16);
+        sendLedRequest(buttonId, rgb);
+    });
+
+    // Nasconde il color picker e disattiva la modalità di selezione multipla
+    multiSelectMode = false;
+    document.getElementById('multi-color-picker').style.display = 'none';
+    document.querySelectorAll('.checkbox').forEach(checkbox => {
+        checkbox.style.display = 'none';
+        checkbox.checked = false;
+    });
+});
+
+// Spegne solo i LED selezionati
+document.getElementById('turn-off-selected').addEventListener('click', function() {
+    // Trova tutti i LED selezionati tramite checkbox
+    document.querySelectorAll('.checkbox:checked').forEach(checkbox => {
+        const buttonId = checkbox.id.split('-')[1];
+        const button = document.getElementById(buttonId);
+        button.style.backgroundColor = 'black';
+        console.log(`Button ID: ${buttonId}, Power: Off`);
+        sendLedRequest(buttonId);
+    });
+
+    // Nasconde il color picker e disattiva la modalità di selezione multipla
+    multiSelectMode = false;
+    document.getElementById('multi-color-picker').style.display = 'none';
+    document.querySelectorAll('.checkbox').forEach(checkbox => {
+        checkbox.style.display = 'none';
+        checkbox.checked = false;
+    });
+});

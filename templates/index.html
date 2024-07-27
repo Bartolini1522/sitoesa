@@ -13,28 +13,48 @@
     </header>
 
     <div class="container">
+        <!-- Pannello di controllo principale -->
         <div class="control-panel" id="control-panel">
             <button id="all-on">Accendi Tutti</button>
             <button id="all-off">Spegni Tutti</button>
             <input type="color" id="all-color-picker">
             <button id="apply-color">Applica Colore</button>
+            <button id="multi-select-toggle">Selezione Multipla</button> <!-- Pulsante per attivare la selezione multipla -->
         </div>
 
+        <!-- Immagine principale -->
         <img src="/static/img/muro2.png" alt="Immagine" class="photo" id="photo">
 
+        <!-- Coordinate del click sull'immagine -->
         <div class="coordinates" id="coordinates">Coordinate: (x, y)</div>
-        <button class="button button1" id="1"></button>
-        <button class="button button2" id="2"></button>
-        <button class="button button3" id="3"></button>
+        
+        <!-- Pulsanti LED e checkbox per selezione multipla -->
+        <div class="led-container">
+            <input type="checkbox" class="checkbox" id="checkbox-1" style="display:none">
+            <button class="button button1" id="1"></button>
+            
+            <input type="checkbox" class="checkbox" id="checkbox-2" style="display:none">
+            <button class="button button2" id="2"></button>
+            
+            <input type="checkbox" class="checkbox" id="checkbox-3" style="display:none">
+            <button class="button button3" id="3"></button>
+        </div>
 
-        <!-- Color Picker -->
-        <div class="color-picker" id="color-picker">
+        <!-- Color Picker per la selezione multipla -->
+        <div class="color-picker" id="multi-color-picker" style="display:none;">
+            <input type="color" id="multi-color-input">
+            <button id="apply-multi-color">Applica Colore Selezionato</button>
+            <button id="turn-off-selected">Spegni Selezionati</button>
+        </div>
+
+        <!-- Color Picker singolo -->
+        <div class="color-picker" id="color-picker" style="display:none;">
             <input type="color" id="color-input">
             <button id="submit-color">Applica</button>
         </div>
 
         <!-- Modal -->
-        <div class="modal" id="modal">
+        <div class="modal" id="modal" style="display:none;">
             <button id="on-button">Accendi</button>
             <button id="off-button">Spegni</button>
         </div>
@@ -47,4 +67,3 @@
     <script src="/static/js/script.js"></script>
 </body>
 </html>
-
