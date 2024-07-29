@@ -1,7 +1,14 @@
 let selectedButtonIds = [];
 
-// Funzione per mostrare il modal
-function showModal(event, buttonId) {
+// Mostra o nasconde il modal
+function toggleModal() {
+    const modal = document.getElementById('modal');
+    modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+}
+
+// Gestisce il click sui bottoni LED
+function handleButtonClick(event) {
+    const buttonId = event.target.id;
     if (selectedButtonIds.includes(buttonId)) {
         // Deseleziona se il LED è già selezionato
         selectedButtonIds = selectedButtonIds.filter(id => id !== buttonId);
@@ -14,15 +21,9 @@ function showModal(event, buttonId) {
     updateSelectedCount();
 }
 
-// Aggiorna il conteggio dei LED selezionati nel modal
+// Aggiorna il conteggio dei LED selezionati
 function updateSelectedCount() {
     document.getElementById('selected-count').textContent = `Selezionati: ${selectedButtonIds.length}`;
-}
-
-// Mostra o nasconde il modal
-function toggleModal() {
-    const modal = document.getElementById('modal');
-    modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
 }
 
 // Mostra il color picker
@@ -33,47 +34,60 @@ function showColorPicker(event) {
     colorPicker.style.left = `${event.clientX + 10}px`;
 }
 
-// Funzione per inviare richieste al server
-function sendLedRequest(id, action, color = null) {
+// Invia richiesta al server per azione sui LED
+function sendLedRequest(ids, action, color = null) {
     let url;
     if (action === 'color') {
-        url = `http://delfo.local:5000/set_led/${id}/${color}`;
-    } else if (action === 'on') {
-        url = `http://delfo.local:5000/turn_on/${id}`;
-    } else if (action === 'off') {
-        url = `http://delfo.local:5000/turn_off/${id}`;
-    }
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-    })
-    .then(response => response.json())
-    .then(data => console.log(data.message))
-    .catch(error => console.error('Error:', error));
-}
-
-// Funzione per applicare azioni batch
-function applyBatchAction(ids, action, color = null) {
-    fetch('http://delfo.local:5000/batch_action', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            ids: ids,
-            action: action,
-            color: color ? parseInt(color.slice(1), 16) : null
+        url = `http://delfo.local:5000/batch_action`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: ids,
+                action: 'color',
+                color: color ? parseInt(color.slice(1), 16) : null
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => console.log(data.message))
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => console.log(data.message))
+        .catch(error => console.error('Error:', error));
+    } else if (action === 'on' || action === 'off') {
+        url = `http://delfo.local:5000/batch_action`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                ids: ids,
+                action: action
+            })
+        })
+        .then(response => response.json())
+        .then(data => console.log(data.message))
+        .catch(error => console.error('Error:', error));
+    }
 }
 
-// Gestisce l'applicazione del colore scelto tramite color picker
+// Gestisci il click sul bottone "Accendi"
+document.getElementById('on-button').addEventListener('click', function() {
+    if (selectedButtonIds.length > 0) {
+        sendLedRequest(selectedButtonIds, 'on');
+    }
+    toggleModal();
+});
+
+// Gestisci il click sul bottone "Spegni"
+document.getElementById('off-button').addEventListener('click', function() {
+    if (selectedButtonIds.length > 0) {
+        sendLedRequest(selectedButtonIds, 'off');
+    }
+    toggleModal();
+});
+
+// Gestisci l'applicazione del colore scelto tramite color picker
 document.getElementById('submit-color').addEventListener('click', function() {
     if (selectedButtonIds.length === 0) {
         console.log("Nessun LED selezionato");
@@ -82,31 +96,15 @@ document.getElementById('submit-color').addEventListener('click', function() {
 
     const colorInput = document.getElementById('color-input');
     const color = colorInput.value;
-    applyBatchAction(selectedButtonIds, 'color', color);
+    sendLedRequest(selectedButtonIds, 'color', color);
 
     document.getElementById('color-picker').style.display = 'none';
     toggleModal();
 });
 
-// Gestisce il click sul bottone "Accendi"
-document.getElementById('on-button').addEventListener('click', function() {
-    if (selectedButtonIds.length > 0) {
-        applyBatchAction(selectedButtonIds, 'on');
-    }
-    toggleModal();
-});
-
-// Gestisce il click sul bottone "Spegni"
-document.getElementById('off-button').addEventListener('click', function() {
-    if (selectedButtonIds.length > 0) {
-        applyBatchAction(selectedButtonIds, 'off');
-    }
-    toggleModal();
-});
-
-// Gestisce il click sui bottoni LED
+// Gestisci il click sui bottoni LED
 document.querySelectorAll('.button').forEach(button => {
-    button.addEventListener('click', event => showModal(event, button.id));
+    button.addEventListener('click', handleButtonClick);
 });
 
 // Visualizza le coordinate del click sull'immagine
