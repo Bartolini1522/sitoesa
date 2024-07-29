@@ -51,30 +51,40 @@ def set_led_color(led_id, color):
 
 @app.route('/batch_action', methods=['POST'])
 def batch_action():
-    data = request.json
+    data = request.get_json()
     ids = data.get('ids', [])
     action = data.get('action')
-    color = data.get('color')
-
-    if not ids or action not in ['on', 'off', 'color']:
-        return jsonify({'status': 'error', 'message': 'Dati di richiesta non validi'}), 400
-
-    for led_id in ids:
-        if 1 <= led_id <= LED_COUNT:
-            if action == 'on':
-                pixels[led_id - 1] = (255, 255, 255)
-            elif action == 'off':
-                pixels[led_id - 1] = (0, 0, 0)
-            elif action == 'color' and color is not None:
-                r = (color >> 16) & 0xFF
-                g = (color >> 8) & 0xFF
-                b = color & 0xFF
+    color = data.get('color', None)
+    
+    if action == 'color' and color is not None:
+        r = (color >> 16) & 0xFF
+        g = (color >> 8) & 0xFF
+        b = color & 0xFF
+        for led_id in ids:
+            if 1 <= led_id <= LED_COUNT:
                 pixels[led_id - 1] = (r, g, b)
-        else:
-            return jsonify({'status': 'error', 'message': f'LED ID non valido: {led_id}'}), 404
-
-    pixels.show()
-    return jsonify({'status': 'success', 'message': f'Azione batch {action} applicata con successo'}), 200
+            else:
+                return jsonify({'status': 'error', 'message': f'LED ID {led_id} non valido'}), 404
+        pixels.show()
+        return jsonify({'status': 'success', 'message': 'Colore applicato a più LED'}), 200
+    elif action == 'on':
+        for led_id in ids:
+            if 1 <= led_id <= LED_COUNT:
+                pixels[led_id - 1] = (255, 255, 255)  # Bianco per accendere
+            else:
+                return jsonify({'status': 'error', 'message': f'LED ID {led_id} non valido'}), 404
+        pixels.show()
+        return jsonify({'status': 'success', 'message': 'LED accesi'}), 200
+    elif action == 'off':
+        for led_id in ids:
+            if 1 <= led_id <= LED_COUNT:
+                pixels[led_id - 1] = (0, 0, 0)  # Spento
+            else:
+                return jsonify({'status': 'error', 'message': f'LED ID {led_id} non valido'}), 404
+        pixels.show()
+        return jsonify({'status': 'success', 'message': 'LED spenti'}), 200
+    else:
+        return jsonify({'status': 'error', 'message': 'Azione non valida'}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
