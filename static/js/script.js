@@ -1,36 +1,36 @@
 let selectedButtonIds = [];
-let selectedButtons = [];
 
 // Funzione per mostrare il modal
 function showModal(event, buttonId) {
-    selectedButtonIds = [buttonId];
-    const modal = document.getElementById('modal');
-    modal.style.display = 'block';
-    modal.style.top = (event.clientY + 10) + 'px';
-    modal.style.left = (event.clientX + 10) + 'px';
+    if (selectedButtonIds.includes(buttonId)) {
+        // Deseleziona se il LED è già selezionato
+        selectedButtonIds = selectedButtonIds.filter(id => id !== buttonId);
+        event.target.classList.remove('selected');
+    } else {
+        // Seleziona il LED
+        selectedButtonIds.push(buttonId);
+        event.target.classList.add('selected');
+    }
+    updateSelectedCount();
 }
 
-// Funzione per mostrare il color picker
+// Aggiorna il conteggio dei LED selezionati nel modal
+function updateSelectedCount() {
+    document.getElementById('selected-count').textContent = `Selezionati: ${selectedButtonIds.length}`;
+}
+
+// Mostra o nasconde il modal
+function toggleModal() {
+    const modal = document.getElementById('modal');
+    modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+}
+
+// Mostra il color picker
 function showColorPicker(event) {
     const colorPicker = document.getElementById('color-picker');
     colorPicker.style.display = 'block';
-    colorPicker.style.top = (event.clientY + 10) + 'px';
-    colorPicker.style.left = (event.clientX + 10) + 'px';
-}
-
-// Gestisce il click sui bottoni LED
-function handleButtonClick(event) {
-    const buttonId = event.target.id;
-    selectedButtonIds = [buttonId];
-    selectedButtons = [event.target];
-    showModal(event, buttonId);
-}
-
-// Funzione per applicare il colore a tutti i LED
-function applyColorToAll(color) {
-    document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = color;
-    });
+    colorPicker.style.top = `${event.clientY + 10}px`;
+    colorPicker.style.left = `${event.clientX + 10}px`;
 }
 
 // Funzione per inviare richieste al server
@@ -73,15 +73,6 @@ function applyBatchAction(ids, action, color = null) {
     .catch(error => console.error('Error:', error));
 }
 
-// Visualizza le coordinate del click sull'immagine
-document.getElementById('photo').addEventListener('click', function(event) {
-    const rect = event.target.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const coordinatesBox = document.getElementById('coordinates');
-    coordinatesBox.textContent = `Coordinate: (${Math.round(x)}, ${Math.round(y)})`;
-});
-
 // Gestisce l'applicazione del colore scelto tramite color picker
 document.getElementById('submit-color').addEventListener('click', function() {
     if (selectedButtonIds.length === 0) {
@@ -94,16 +85,15 @@ document.getElementById('submit-color').addEventListener('click', function() {
     applyBatchAction(selectedButtonIds, 'color', color);
 
     document.getElementById('color-picker').style.display = 'none';
-    document.getElementById('modal').style.display = 'none';
+    toggleModal();
 });
 
 // Gestisce il click sul bottone "Accendi"
 document.getElementById('on-button').addEventListener('click', function() {
-    showColorPicker(event);
-    document.getElementById('modal').style.display = 'none';
     if (selectedButtonIds.length > 0) {
         applyBatchAction(selectedButtonIds, 'on');
     }
+    toggleModal();
 });
 
 // Gestisce il click sul bottone "Spegni"
@@ -111,39 +101,19 @@ document.getElementById('off-button').addEventListener('click', function() {
     if (selectedButtonIds.length > 0) {
         applyBatchAction(selectedButtonIds, 'off');
     }
-    document.getElementById('modal').style.display = 'none';
+    toggleModal();
 });
 
-// Aggiunge gli event listener a tutti i bottoni LED
+// Gestisce il click sui bottoni LED
 document.querySelectorAll('.button').forEach(button => {
-    button.addEventListener('click', handleButtonClick);
+    button.addEventListener('click', event => showModal(event, button.id));
 });
 
-// Azioni del Pannello di Controllo
-document.getElementById('all-on').addEventListener('click', function() {
-    applyColorToAll('white');
-    console.log('Button ID: all, Color: white, Power: on');
-    document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = 'white';
-        sendLedRequest(button.id, 'on');
-    });
-});
-
-document.getElementById('all-off').addEventListener('click', function() {
-    applyColorToAll('black');
-    console.log('Button ID: all, Power: off');
-    document.querySelectorAll('.button').forEach(button => {
-        button.style.backgroundColor = 'black';
-        sendLedRequest(button.id, 'off');
-    });
-});
-
-document.getElementById('apply-color').addEventListener('click', function() {
-    const colorInput = document.getElementById('all-color-picker');
-    const color = colorInput.value;
-    applyColorToAll(color);
-    console.log(`Button ID: all, color: ${color}, Power: on`);
-    document.querySelectorAll('.button').forEach(button => {
-        sendLedRequest(button.id, 'color', color);
-    });
+// Visualizza le coordinate del click sull'immagine
+document.getElementById('photo').addEventListener('click', function(event) {
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const coordinatesBox = document.getElementById('coordinates');
+    coordinatesBox.textContent = `Coordinate: (${Math.round(x)}, ${Math.round(y)})`;
 });
