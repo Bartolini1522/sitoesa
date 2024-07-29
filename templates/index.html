@@ -12,39 +12,35 @@
         <h1>Controllo LED Parete Arrampicata</h1>
     </header>
 
-    <main class="container">
-        <section class="control-panel" id="control-panel">
-            <button id="all-on" aria-label="Turn All LEDs On">Accendi Tutti</button>
-            <button id="all-off" aria-label="Turn All LEDs Off">Spegni Tutti</button>
-            <input type="color" id="all-color-picker" aria-label="Pick a color for all LEDs">
-            <button id="apply-color" aria-label="Apply Color to All LEDs">Applica Colore</button>
-            <button id="toggle-multi-select" aria-label="Toggle Multi-Select Mode">Modalità Selezione Multipla</button>
-        </section>
+    <div class="container">
+        <div class="control-panel" id="control-panel">
+            <button id="all-on">Accendi Tutti</button>
+            <button id="all-off">Spegni Tutti</button>
+            <input type="color" id="all-color-picker">
+            <button id="apply-color">Applica Colore</button>
+        </div>
 
         <img src="/static/img/muro2.png" alt="Immagine" class="photo" id="photo">
 
         <div class="coordinates" id="coordinates">Coordinate: (x, y)</div>
-        
-        <!-- LED Buttons -->
-        <button class="button button1" id="led-button-1" aria-label="LED 1"></button>
-        <button class="button button2" id="led-button-2" aria-label="LED 2"></button>
-        <button class="button button3" id="led-button-3" aria-label="LED 3"></button>
+        <button class="button button1" id="1"></button>
+        <button class="button button2" id="2"></button>
+        <button class="button button3" id="3"></button>
 
         <!-- Color Picker -->
-        <div class="color-picker" id="color-picker" role="dialog" aria-hidden="true">
-            <input type="color" id="color-input" aria-label="Choose LED Color">
-            <button id="submit-color" aria-label="Apply LED Color">Applica</button>
+        <div class="color-picker" id="color-picker">
+            <input type="color" id="color-input">
+            <button id="submit-color">Applica</button>
         </div>
 
         <!-- Modal -->
-        <div class="modal" id="modal" role="dialog" aria-hidden="true">
-            <p>Modalità singola o multipla</p>
-            <button id="on-button" aria-label="Turn On LED">Accendi</button>
-            <button id="off-button" aria-label="Turn Off LED">Spegni</button>
-            <input type="color" id="modal-color-picker" aria-label="Pick LED Color">
-            <button id="modal-apply-color" aria-label="Apply Selected Color">Applica Colore</button>
+        <div class="modal" id="modal">
+            <button id="on-button">Accendi</button>
+            <button id="off-button">Spegni</button>
         </div>
-    </main>
+
+        <div id="selected-count">Selezionati: 0</div>
+    </div>
 
     <footer>
         <p>&copy; 2024 Elite Sport Academy. Tutti i diritti riservati. Versione beta.</p>

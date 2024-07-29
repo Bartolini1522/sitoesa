@@ -31,10 +31,9 @@ footer {
 
 .container {
     position: relative;
-    display: inline-block;
     width: 1600px; /* Larghezza fissa */
     height: 1200px; /* Altezza fissa */
-    margin: 100px 0 20px; /* Aggiunto margine superiore per compensare l'header */
+    margin: 100px 0 20px; /* Margine superiore per compensare l'header */
     overflow: hidden; /* Nasconde elementi fuori dal contenitore */
 }
 
@@ -57,14 +56,12 @@ footer {
     z-index: 10;
 }
 
-.button:hover {
-    transform: scale(1.1);
+.button.selected {
+    border: 2px solid #FFD700; /* Evidenzia il bottone selezionato */
 }
 
-.checkbox {
-    display: none;
-    position: absolute;
-    z-index: 20;
+.button:hover {
+    transform: scale(1.1);
 }
 
 .coordinates {
@@ -184,23 +181,15 @@ footer {
     background-color: #F57C00;
 }
 
-.control-panel #toggle-multi-select {
-    background-color: #4CAF50;
-}
-
-.control-panel #toggle-multi-select.active {
-    background-color: #FF5722; /* Changes color when active */
-}
-
-.control-panel #toggle-multi-select:hover {
-    background-color: #388E3C;
-}
-
-.control-panel #toggle-multi-select.active:hover {
-    background-color: #E64A19; /* Changes color on hover when active */
-}
-
-.button.selected {
-    border: 2px solid #FF5722;
-    box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+#selected-count {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 3px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    z-index: 20;
 }
